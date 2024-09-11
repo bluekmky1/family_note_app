@@ -19,8 +19,20 @@ class MyApp extends ConsumerWidget {
             color: Colors.white,
             elevation: 0,
           ),
+          dialogTheme: const DialogTheme(
+            backgroundColor: Colors.white,
+            elevation: 0,
+          ),
           scaffoldBackgroundColor: Colors.white,
           fontFamily: 'Pretendard',
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: const Color.fromARGB(255, 155, 155, 155),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
         ),
       );
 }
