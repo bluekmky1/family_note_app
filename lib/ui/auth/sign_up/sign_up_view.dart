@@ -78,7 +78,7 @@ class SignUpFormWidget extends StatelessWidget {
           ),
           const OutlineBorderTextFieldWidget(
             label: '닉네임',
-            hintText: '30자 이내로 작성해주시길 바랍니다',
+            hintText: '30자 이내로 작성해주세요',
           ),
           const SizedBox(
             height: 32,
