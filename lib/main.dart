@@ -15,6 +15,10 @@ class MyApp extends ConsumerWidget {
         routerConfig: ref.watch(appRouterProvider).router,
         title: '좀만 더 잘래',
         theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            color: Colors.white,
+            elevation: 0,
+          ),
           scaffoldBackgroundColor: Colors.white,
           fontFamily: 'Pretendard',
         ),
