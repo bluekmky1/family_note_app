@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../theme/typographies.dart';
 
@@ -159,7 +160,13 @@ class RecruitView extends StatelessWidget {
                                 child: SizedBox(
                                   height: 56,
                                   child: TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            const CompleteRecruitDialogWidget(),
+                                      );
+                                    },
                                     style: TextButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -184,6 +191,92 @@ class RecruitView extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+        ),
+      );
+}
+
+class CompleteRecruitDialogWidget extends StatelessWidget {
+  const CompleteRecruitDialogWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+        child: SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 16,
+                  ),
+                  child: Text(
+                    '가족 구성원 모집을\n완료하시겠습니까?',
+                    style: Typo.hBold20,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: SizedBox(
+                        height: 56,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            side: const BorderSide(
+                              color: Color(
+                                0xFFFFA800,
+                              ),
+                              width: 2,
+                            ),
+                            backgroundColor: Colors.white,
+                          ),
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: Text(
+                            '아니요',
+                            style: Typo.tSemiBold16.copyWith(
+                              color: const Color(
+                                0xFFFFA800,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: SizedBox(
+                        height: 56,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: const Color(
+                              0xFFFFA800,
+                            ),
+                          ),
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: Text(
+                            '네',
+                            style: Typo.tSemiBold16.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       );
