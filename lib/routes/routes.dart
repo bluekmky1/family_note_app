@@ -24,4 +24,10 @@ class Routes {
     name: '/home',
     path: '/home',
   );
+
+  // 가족 구성원 모집 페이지
+  static const RouteInfo recruit = RouteInfo(
+    name: '/recruit',
+    path: '/recruit',
+  );
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../ui/auth/sign_in/sign_in_view.dart';
 import '../ui/auth/sign_up/sign_up_view.dart';
 import '../ui/home/home_view.dart';
+import '../ui/recruit/recruit_view.dart';
 import 'app_router_interceptor.dart';
 import 'routes.dart';
 
@@ -28,7 +29,7 @@ class AppRouter {
       _appRouterInterceptor.redirect(context, state);
 
   late final GoRouter _router = GoRouter(
-    initialLocation: Routes.signIn.name,
+    initialLocation: Routes.recruit.name,
     debugLogDiagnostics: true,
     navigatorKey: rootNavigatorKey,
     errorBuilder: (BuildContext context, GoRouterState state) => const Scaffold(
@@ -65,6 +66,14 @@ class AppRouter {
         pageBuilder: (BuildContext context, GoRouterState state) =>
             const NoTransitionPage<dynamic>(
           child: SignUpView(),
+        ),
+      ),
+      GoRoute(
+        name: Routes.recruit.name,
+        path: Routes.recruit.path,
+        pageBuilder: (BuildContext context, GoRouterState state) =>
+            const NoTransitionPage<dynamic>(
+          child: RecruitView(),
         ),
       ),
       GoRoute(
