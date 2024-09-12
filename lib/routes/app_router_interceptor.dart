@@ -36,14 +36,16 @@ class AppRouterInterceptor {
 
     if (!isSignedIn) {
       // sign in 으로 가야만 하는 상태입니다.
-      // if (state.fullPath?.startsWith(Routes.auth.name) == false) {
-      return Routes.signIn.name;
-      // }
+      if (state.fullPath?.startsWith(Routes.auth.name) == false) {
+        return Routes.signIn.name;
+      }
     }
+
     // 로그인이 되었고 가족 모집이 완료되지 않은 상태
-    if (!hasFamily) {
-      print(hasFamily);
-      return Routes.recruit.name;
+    if (isSignedIn) {
+      if (!hasFamily) {
+        return Routes.recruit.name;
+      }
     }
 
     return null;

@@ -1,22 +1,22 @@
 import 'route_info.dart';
 
 class Routes {
-  // // auth 기본
-  // static const RouteInfo auth = RouteInfo(
-  //   name: '/auth',
-  //   path: '/auth',
-  // );
+  // auth 기본
+  static const RouteInfo auth = RouteInfo(
+    name: '/auth',
+    path: '/auth',
+  );
 
   // 로그인 페이지
   static const RouteInfo signIn = RouteInfo(
-    name: '/sign-in',
-    path: '/sign-in',
+    name: '/auth/sign-in',
+    path: 'sign-in',
   );
 
   // 회원가입 페이지
   static const RouteInfo signUp = RouteInfo(
-    name: '/sign-up',
-    path: '/sign-up',
+    name: 'auth/sign-up',
+    path: 'sign-up',
   );
 
   // 홈(메인)페이지
