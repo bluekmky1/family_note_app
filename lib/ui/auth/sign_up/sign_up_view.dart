@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../routes/routes.dart';
 import '../../../theme/typographies.dart';
-import '../../common/consts/assets.dart';
 import '../../common/widgets/outLine_border_text_field_widget.dart';
 
 class SignUpView extends StatelessWidget {
@@ -11,6 +10,13 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          titleSpacing: 8,
+          title: Text(
+            '회원가입',
+            style: Typo.tSemiBold20.copyWith(fontSize: 32),
+          ),
+        ),
         body: Column(
           children: <Widget>[
             Expanded(
@@ -69,13 +75,6 @@ class SignUpFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
-          Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Image.asset(Assets.logo),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
           const OutlineBorderTextFieldWidget(
             label: '닉네임',
             hintText: '30자 이내로 작성해주세요',
