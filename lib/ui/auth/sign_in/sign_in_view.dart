@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../routes/routes.dart';
+import '../../../service/app/app_service.dart';
 import '../../../theme/typographies.dart';
 import '../../common/consts/assets.dart';
 import '../../common/widgets/outLine_border_text_field_widget.dart';
@@ -63,70 +65,77 @@ class SignInView extends StatelessWidget {
       );
 }
 
-class SignInFormWidget extends StatelessWidget {
+class SignInFormWidget extends ConsumerWidget {
   const SignInFormWidget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) => Column(
-        children: <Widget>[
-          Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Image.asset(Assets.logo),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          const OutlineBorderTextFieldWidget(
-            label: '닉네임',
-            hintText: '30자 이내로 작성해주세요',
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-          const OutlineBorderTextFieldWidget(
-            label: '비밀번호',
-          ),
-          const SizedBox(
-            height: 72,
-          ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(
-                  height: 56,
-                  child: TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      backgroundColor: const Color(0xFFFFA800),
-                    ),
-                    child: Text(
-                      '로그인',
-                      style: Typo.hBold20.copyWith(
-                        color: Colors.white,
-                      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AppService appservice = ref.read(appServiceProvider.notifier);
+
+    return Column(
+      children: <Widget>[
+        Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Image.asset(Assets.logo),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        const OutlineBorderTextFieldWidget(
+          label: '닉네임',
+          hintText: '30자 이내로 작성해주세요',
+        ),
+        const SizedBox(
+          height: 32,
+        ),
+        const OutlineBorderTextFieldWidget(
+          label: '비밀번호',
+        ),
+        const SizedBox(
+          height: 72,
+        ),
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: SizedBox(
+                height: 56,
+                child: TextButton(
+                  onPressed: () {
+                    appservice.signIn();
+                    context.goNamed(Routes.home.name);
+                  },
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    backgroundColor: const Color(0xFFFFA800),
+                  ),
+                  child: Text(
+                    '로그인',
+                    style: Typo.hBold20.copyWith(
+                      color: Colors.white,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          TextButton(
-            onPressed: () {
-              context.goNamed(Routes.signUp.name);
-            },
-            style: TextButton.styleFrom(),
-            child: Text(
-              '회원가입',
-              style: Typo.bMedium18.copyWith(
-                color: Colors.black,
-              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: () {
+            context.goNamed(Routes.signUp.name);
+          },
+          style: TextButton.styleFrom(),
+          child: Text(
+            '회원가입',
+            style: Typo.bMedium18.copyWith(
+              color: Colors.black,
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 }
