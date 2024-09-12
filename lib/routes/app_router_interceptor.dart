@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../service/app/app_service.dart';
+import '../service/app/app_state.dart';
 import 'routes.dart';
 
 // redirect 여부 및 redirect location 를 결정하는 역할을 수행합니다.
@@ -15,11 +17,11 @@ class AppRouterInterceptor {
 
   // 라우트의 이동마다 호출됩니다.
   FutureOr<String?> redirect(BuildContext context, GoRouterState state) async {
-    const bool isSignedIn = false;
-    return null;
+    final bool isSignedIn = _ref
+        .read(appServiceProvider.select((AppState value) => value.isSignedIn));
 
-    // final bool isSignedIn = _ref
-    //     .read(appServiceProvider.select((AppState value) => value.isSignedIn));
+    final bool hasFamily = _ref
+        .watch(appServiceProvider.select((AppState value) => value.hasFamily));
     // final bool hasUserInfo = _ref.read(
     //   myInfoServiceProvider.select((MyInfoState value) => value.hasUserInfo),
     // );
@@ -32,14 +34,19 @@ class AppRouterInterceptor {
     //       .select((MyInfoState value) => value.isPermissionTrue),
     // );
 
-    // 심사 승인이 되어 있지 않으면 티져 페이지로 이동
+    if (!isSignedIn) {
+      // sign in 으로 가야만 하는 상태입니다.
+      // if (state.fullPath?.startsWith(Routes.auth.name) == false) {
+      return Routes.signIn.name;
+      // }
+    }
+    // 로그인이 되었고 가족 모집이 완료되지 않은 상태
+    if (!hasFamily) {
+      print(hasFamily);
+      return Routes.recruit.name;
+    }
 
-    // if (!isSignedIn) {
-    //   // sign in 으로 가야만 하는 상태입니다.
-    //   // if (state.fullPath?.startsWith(Routes.auth.name) == false) {
-    //   return Routes.signIn.name;
-    //   // }
-    // }
+    return null;
 
     // // 현재 위치가 아직도 auth 관련 페이지에 있다면
     // // 즉시 홈화면으로 리다이렉트 해줍니다.
