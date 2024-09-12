@@ -13,11 +13,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp.router(
         routerConfig: ref.watch(appRouterProvider).router,
-        title: '좀만 더 잘래',
+        title: 'Family Note',
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
             color: Colors.white,
             elevation: 0,
+            scrolledUnderElevation: 0,
           ),
           dialogTheme: const DialogTheme(
             backgroundColor: Colors.white,
