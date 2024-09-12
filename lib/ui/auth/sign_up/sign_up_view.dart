@@ -125,7 +125,7 @@ class SignUpFormWidget extends StatelessWidget {
             },
             style: TextButton.styleFrom(),
             child: Text(
-              '로그인',
+              '로그인 하기',
               style: Typo.bMedium18.copyWith(
                 color: Colors.black,
               ),
