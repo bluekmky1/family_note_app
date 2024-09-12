@@ -211,16 +211,19 @@ class CompleteRecruitDialogWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 16,
-                  ),
-                  child: Text(
-                    '가족 구성원 모집을\n완료하시겠습니까?',
-                    style: Typo.hBold20,
-                  ),
-                ),
                 const SizedBox(height: 16),
+                const Text(
+                  '가족 구성원 모집을 완료하시겠습니까?',
+                  textAlign: TextAlign.center,
+                  style: Typo.hBold18,
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  '모집 완료 후 가족 구성원을 변경할 수 없습니다.',
+                  textAlign: TextAlign.center,
+                  style: Typo.bMedium14,
+                ),
+                const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
