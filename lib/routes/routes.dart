@@ -15,7 +15,7 @@ class Routes {
 
   // 회원가입 페이지
   static const RouteInfo signUp = RouteInfo(
-    name: 'auth/sign-up',
+    name: 'auth/sign-in/sign-up',
     path: 'sign-up',
   );
 
