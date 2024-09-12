@@ -9,63 +9,134 @@ class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          scrolledUnderElevation: 0,
-          titleSpacing: 0,
-          title: Image.asset(
-            Assets.logoHorizon,
-            height: 56,
-          ),
+  Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+    return Scaffold(
+      key: scaffoldKey,
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        titleSpacing: 0,
+        title: Image.asset(
+          Assets.logoHorizon,
+          height: 56,
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: <Widget>[
-                      const SliverToBoxAdapter(
-                        child: LoadNewQuestionButtonWidget(),
-                      ),
-                      SliverList.separated(
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 9) {
-                            return const Padding(
-                              padding: EdgeInsets.only(bottom: 20),
-                              child: QuestionItemWidget(),
-                            );
-                          }
-                          return const QuestionItemWidget();
-                        },
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const Divider(
-                          height: 10,
-                          color: Colors.white,
-                        ),
-                        itemCount: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                // Expanded(
-                //   child: ListView.separated(
-                //     itemBuilder: (BuildContext context, int index) =>
-                //         const QuestionItemWidget(),
-                //     separatorBuilder: (BuildContext context, int index) =>
-                //         const Divider(
-                //       height: 10,
-                //       color: Colors.white,
-                //     ),
-                //     itemCount: 10,
-                //   ),
-                // )
-              ],
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: IconButton(
+              onPressed: () {
+                scaffoldKey.currentState?.openEndDrawer();
+              },
+              icon: const Icon(Icons.people_alt_outlined),
             ),
           ),
+        ],
+      ),
+      endDrawer: Drawer(
+        backgroundColor: const Color(0XFFFF5372),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(200),
+            bottomLeft: Radius.circular(20),
+          ),
         ),
-      );
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const SizedBox(height: 200),
+              Expanded(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'bluekmky\n의 가족',
+                    style: Typo.hBold24.copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ...List<Widget>.generate(
+                          4,
+                          (int index) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              'bluekmky',
+                              style: Typo.hBold16.copyWith(color: Colors.white),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 10),
+                  constraints: const BoxConstraints(maxWidth: 80),
+                  child: Image.asset(Assets.face),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    const SliverToBoxAdapter(
+                      child: LoadNewQuestionButtonWidget(),
+                    ),
+                    SliverList.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 9) {
+                          return const Padding(
+                            padding: EdgeInsets.only(bottom: 20),
+                            child: QuestionItemWidget(),
+                          );
+                        }
+                        return const QuestionItemWidget();
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(
+                        height: 10,
+                        color: Colors.white,
+                      ),
+                      itemCount: 10,
+                    ),
+                  ],
+                ),
+              ),
+              // Expanded(
+              //   child: ListView.separated(
+              //     itemBuilder: (BuildContext context, int index) =>
+              //         const QuestionItemWidget(),
+              //     separatorBuilder: (BuildContext context, int index) =>
+              //         const Divider(
+              //       height: 10,
+              //       color: Colors.white,
+              //     ),
+              //     itemCount: 10,
+              //   ),
+              // )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class LoadNewQuestionButtonWidget extends StatelessWidget {
