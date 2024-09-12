@@ -1,16 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../routes/routes.dart';
+import '../../service/app/app_service.dart';
 import '../../theme/typographies.dart';
 import '../common/consts/assets.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends ConsumerWidget {
   const HomeView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+    final AppService appService = ref.read(appServiceProvider.notifier);
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -78,10 +84,31 @@ class HomeView extends StatelessWidget {
               )),
               Align(
                 alignment: Alignment.bottomLeft,
-                child: Container(
-                  margin: const EdgeInsets.only(left: 10),
-                  constraints: const BoxConstraints(maxWidth: 80),
-                  child: Image.asset(Assets.face),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(left: 10),
+                      constraints: const BoxConstraints(maxWidth: 80),
+                      child: Image.asset(Assets.face),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () {
+                        appService.signOut();
+                        context.goNamed(Routes.signIn.name);
+                      },
+                      child: Text(
+                        '로그아웃',
+                        style: Typo.hBold14.copyWith(color: Colors.black),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -119,18 +146,6 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              // Expanded(
-              //   child: ListView.separated(
-              //     itemBuilder: (BuildContext context, int index) =>
-              //         const QuestionItemWidget(),
-              //     separatorBuilder: (BuildContext context, int index) =>
-              //         const Divider(
-              //       height: 10,
-              //       color: Colors.white,
-              //     ),
-              //     itemCount: 10,
-              //   ),
-              // )
             ],
           ),
         ),
@@ -207,7 +222,7 @@ class QuestionItemWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 '내일 하루를 위해 오늘 할 수 있는 가장 좋은 일은 무엇이라고 생각하나요? 글자채우기채우기',
-                style: Typo.bMedium16,
+                style: Typo.tSemiBold18,
               ),
             ),
           ],
