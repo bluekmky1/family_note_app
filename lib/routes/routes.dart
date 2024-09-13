@@ -25,6 +25,12 @@ class Routes {
     path: '/home',
   );
 
+  // 답변 작성 및 보기 페이지
+  static const RouteInfo answers = RouteInfo(
+    name: '/home/answers',
+    path: 'answers',
+  );
+
   // 가족 구성원 모집 페이지
   static const RouteInfo recruit = RouteInfo(
     name: '/recruit',

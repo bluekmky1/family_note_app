@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../ui/answers/answers_view.dart';
 import '../ui/auth/sign_in/sign_in_view.dart';
 import '../ui/auth/sign_up/sign_up_view.dart';
 import '../ui/home/home_view.dart';
@@ -74,6 +75,16 @@ class AppRouter {
             const NoTransitionPage<dynamic>(
           child: HomeView(),
         ),
+        routes: <RouteBase>[
+          GoRoute(
+            name: Routes.answers.name,
+            path: Routes.answers.path,
+            pageBuilder: (BuildContext context, GoRouterState state) =>
+                const NoTransitionPage<dynamic>(
+              child: AnswersView(),
+            ),
+          ),
+        ],
       ),
       GoRoute(
         name: Routes.recruit.name,
