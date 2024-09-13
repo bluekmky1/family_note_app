@@ -14,7 +14,6 @@ class RecruitView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(appServiceProvider.select((AppState value) => value.hasFamily),
         (bool? previous, bool next) {
-      print(next);
       if (next) {
         context.goNamed(Routes.home.name);
       }
