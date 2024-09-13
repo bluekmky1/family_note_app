@@ -6,18 +6,29 @@ import '../../routes/routes.dart';
 import '../../service/app/app_service.dart';
 import '../../service/app/app_state.dart';
 import '../../theme/typographies.dart';
+import 'recruit_state.dart';
+import 'recruit_view_model.dart';
 
-class RecruitView extends ConsumerWidget {
+class RecruitView extends ConsumerStatefulWidget {
   const RecruitView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RecruitView> createState() => _RecruitViewState();
+}
+
+class _RecruitViewState extends ConsumerState<RecruitView> {
+  @override
+  Widget build(BuildContext context) {
     ref.listen(appServiceProvider.select((AppState value) => value.hasFamily),
         (bool? previous, bool next) {
       if (next) {
         context.goNamed(Routes.home.name);
       }
     });
+
+    final RecruitState state = ref.watch(recruitViewModelProvider);
+    final RecruitViewModel viewModel =
+        ref.read(recruitViewModelProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -88,36 +99,87 @@ class RecruitView extends ConsumerWidget {
                       vertical: 16,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        TextField(
-                          onTapOutside: (_) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          cursorColor: const Color(0xFFFFA800),
-                          decoration: InputDecoration(
-                            hintText: '가족 구성원의 닉네임을 검색해주세요',
-                            filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: const Padding(
-                              padding: EdgeInsets.only(left: 16, right: 32),
-                              child: Icon(Icons.search),
+                        Theme(
+                          data: ThemeData(
+                            textSelectionTheme: const TextSelectionThemeData(
+                              cursorColor: Color(0xFFFFA800),
                             ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 16),
-                            border: const OutlineInputBorder(),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFCDCDCD),
+                            searchViewTheme: SearchViewThemeData(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFCDCDCD),
-                              ),
+                              surfaceTintColor: Colors.white,
+                              backgroundColor: Colors.white,
+                              dividerColor: const Color(0xFFCDCDCD),
                             ),
                           ),
+                          child: SearchAnchor(
+                            isFullScreen: false,
+                            builder: (_, SearchController controller) =>
+                                GestureDetector(
+                              onTap: () {
+                                controller.openView();
+                              },
+                              child: Container(
+                                height: 58,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: const Color(0xFFCDCDCD),
+                                  ),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      '가족 구성원의 닉네임을 검색해주세요',
+                                      style: Typo.bMedium16.copyWith(
+                                        color: const Color(0xFF888888),
+                                      ),
+                                    ),
+                                    const Icon(Icons.search)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            viewBuilder: (_) => Consumer(
+                              builder: (_, WidgetRef ref, __) {
+                                final List<String> searchResults = ref.watch(
+                                  recruitViewModelProvider.select(
+                                      (RecruitState value) =>
+                                          value.searchedFamilyList),
+                                );
+
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          FamilyListItemWidget(
+                                    nickName: searchResults[index],
+                                    onPressed: () {
+                                      viewModel.selectFamily(
+                                        nickName: searchResults[index],
+                                      );
+                                      context.pop();
+                                    },
+                                  ),
+                                  itemCount: searchResults.length,
+                                );
+                              },
+                            ),
+                            suggestionsBuilder: (_, __) => <Widget>[],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          '모집된 가족 구성원',
+                          style: Typo.tSemiBold20,
                         ),
                         const SizedBox(height: 16),
                         Expanded(
@@ -131,34 +193,22 @@ class RecruitView extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: ListView.separated(
-                              itemBuilder: (BuildContext context, int index) =>
-                                  Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                child: SizedBox(
-                                  height: 64,
-                                  child: Center(
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: ListTile(
-                                        title: const Text('bluekmky'),
-                                        trailing: const Icon(
-                                            Icons.remove_circle_outline),
-                                        onTap: () {},
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              itemBuilder: (_, int index) =>
+                                  FamilyListItemWidget(
+                                nickName: state.recruitedFamilyList[index],
+                                onPressed: () {
+                                  viewModel.unselectFamily(
+                                    nickName: state.recruitedFamilyList[index],
+                                  );
+                                },
                               ),
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      const Padding(
+                              separatorBuilder: (_, int index) => const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
                                 child: Divider(
                                   height: 8,
                                 ),
                               ),
-                              itemCount: 10,
+                              itemCount: state.recruitedFamilyList.length,
                             ),
                           ),
                         ),
@@ -199,6 +249,61 @@ class RecruitView extends ConsumerWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FamilyListItemWidget extends ConsumerWidget {
+  const FamilyListItemWidget({
+    required this.nickName,
+    required this.onPressed,
+    super.key,
+  });
+  final String nickName;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isSelected = ref
+        .watch(recruitViewModelProvider
+            .select((RecruitState value) => value.recruitedFamilyList))
+        .contains(nickName);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: SizedBox(
+        height: 64,
+        child: Center(
+          child: Material(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    nickName,
+                    style: Typo.bMedium18,
+                  ),
+                  IconButton(
+                    constraints: const BoxConstraints(),
+                    padding: EdgeInsets.zero,
+                    style: IconButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    onPressed: onPressed,
+                    icon: Icon(isSelected
+                        ? Icons.remove_circle_outline_outlined
+                        : Icons.add_circle_outline),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
