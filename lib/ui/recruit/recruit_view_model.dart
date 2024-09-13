@@ -17,9 +17,6 @@ class RecruitViewModel extends StateNotifier<RecruitState> {
     final List<String> newSearchedFamily = state.searchedFamilyList
       ..remove(nickName);
 
-    print(newRecruitedFamilyList);
-    print(newSearchedFamily);
-
     state = state.copyWith(
         searchedFamilyList: newSearchedFamily,
         recruitedFamilyList: newRecruitedFamilyList);
@@ -30,9 +27,6 @@ class RecruitViewModel extends StateNotifier<RecruitState> {
       ..remove(nickName);
     final List<String> newSearchedFamily = state.searchedFamilyList
       ..add(nickName);
-
-    print(newRecruitedFamilyList);
-    print(newSearchedFamily);
 
     state = state.copyWith(
       searchedFamilyList: newSearchedFamily,
