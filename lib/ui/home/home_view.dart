@@ -206,26 +206,31 @@ class QuestionItemWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        height: 110,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: const Color(0xFFFFCE30).withOpacity(0.6),
-        ),
-        child: const Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: Text('#24'),
-            ),
-            Expanded(
-              child: Text(
-                '내일 하루를 위해 오늘 할 수 있는 가장 좋은 일은 무엇이라고 생각하나요? 글자채우기채우기',
-                style: Typo.tSemiBold18,
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: () {
+          context.goNamed(Routes.answers.name);
+        },
+        child: Container(
+          height: 110,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: const Color(0xFFFFCE30).withOpacity(0.6),
+          ),
+          child: const Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 16),
+                child: Text('#24'),
               ),
-            ),
-          ],
+              Expanded(
+                child: Text(
+                  '내일 하루를 위해 오늘 할 수 있는 가장 좋은 일은 무엇이라고 생각하나요? 글자채우기채우기',
+                  style: Typo.tSemiBold18,
+                ),
+              ),
+            ],
+          ),
         ),
       );
 }
