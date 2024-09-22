@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/loading_status.dart';
+import '../../domain/users/model/user_info_model.dart';
 import '../../routes/routes.dart';
-import '../../service/app/app_service.dart';
-import '../../service/app/app_state.dart';
 import '../../theme/typographies.dart';
+import '../common/widgets/outlined_border_text_field_widget.dart';
+import '../family_rooms/family_rooms_view_model.dart';
 import 'recruit_state.dart';
 import 'recruit_view_model.dart';
 
@@ -17,28 +21,38 @@ class RecruitView extends ConsumerStatefulWidget {
 }
 
 class _RecruitViewState extends ConsumerState<RecruitView> {
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    ref.listen(appServiceProvider.select((AppState value) => value.hasFamily),
-        (bool? previous, bool next) {
-      if (next) {
-        context.goNamed(Routes.home.name);
-      }
-    });
-
     final RecruitState state = ref.watch(recruitViewModelProvider);
     final RecruitViewModel viewModel =
         ref.read(recruitViewModelProvider.notifier);
 
+    ref.listen(
+        recruitViewModelProvider
+            .select((RecruitState value) => value.recruitFmailyLoadingStatus),
+        (LoadingStatus? previous, LoadingStatus next) {
+      if (next == LoadingStatus.success) {
+        ref.read(familyRoomsViewModelProvider.notifier).getFamilyGroupList();
+        context
+          ..pop()
+          ..pop();
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Padding(
-          padding: const EdgeInsets.only(top: 16),
-          child: Text(
-            '가족 구성원 모집',
-            style: Typo.tSemiBold20.copyWith(fontSize: 32),
-          ),
+        title: Text(
+          '가족 구성원 모집',
+          style: Typo.tSemiBold20.copyWith(fontSize: 32),
         ),
       ),
       body: SafeArea(
@@ -94,9 +108,11 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
+                    padding: const EdgeInsets.fromLTRB(
+                      16,
+                      0,
+                      16,
+                      16,
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,10 +133,27 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                           ),
                           child: SearchAnchor(
                             isFullScreen: false,
+                            viewOnChanged: (String value) {
+                              if (_debounce?.isActive ?? false) {
+                                _debounce?.cancel();
+                              }
+
+                              _debounce =
+                                  Timer(const Duration(milliseconds: 250), () {
+                                if (value.isNotEmpty) {
+                                  viewModel.searchUser(
+                                    searchKeyword: value,
+                                  );
+                                }
+                              });
+                            },
                             builder: (_, SearchController controller) =>
                                 GestureDetector(
                               onTap: () {
-                                controller.openView();
+                                viewModel.clearSearchResult();
+                                controller
+                                  ..clear()
+                                  ..openView();
                               },
                               child: Container(
                                 height: 58,
@@ -150,7 +183,8 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                             ),
                             viewBuilder: (_) => Consumer(
                               builder: (_, WidgetRef ref, __) {
-                                final List<String> searchResults = ref.watch(
+                                final List<UserInfoModel> searchResults =
+                                    ref.watch(
                                   recruitViewModelProvider.select(
                                       (RecruitState value) =>
                                           value.searchedFamilyList),
@@ -161,11 +195,12 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                                   itemBuilder:
                                       (BuildContext context, int index) =>
                                           FamilyListItemWidget(
-                                    nickName: searchResults[index],
+                                    user: searchResults[index],
                                     onPressed: () {
                                       viewModel.selectFamily(
                                         nickName: searchResults[index],
                                       );
+
                                       context.pop();
                                     },
                                   ),
@@ -195,11 +230,14 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                             child: ListView.separated(
                               itemBuilder: (_, int index) =>
                                   FamilyListItemWidget(
-                                nickName: state.recruitedFamilyList[index],
+                                user: state.recruitedFamilyList[index],
                                 onPressed: () {
-                                  viewModel.unselectFamily(
-                                    nickName: state.recruitedFamilyList[index],
-                                  );
+                                  viewModel
+                                    ..unselectFamily(
+                                      nickName:
+                                          state.recruitedFamilyList[index],
+                                    )
+                                    ..clearSearchResult();
                                 },
                               ),
                               separatorBuilder: (_, int index) => const Padding(
@@ -219,16 +257,20 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                               child: SizedBox(
                                 height: 56,
                                 child: TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          const CompleteRecruitDialogWidget(),
-                                    );
-                                  },
+                                  onPressed: state.recruitedFamilyList.isEmpty
+                                      ? null
+                                      : () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) =>
+                                                const CompleteRecruitDialogWidget(),
+                                          );
+                                        },
                                   style: TextButton.styleFrom(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
+                                    disabledBackgroundColor:
+                                        const Color(0xFFCDCDCD),
                                     backgroundColor: const Color(0xFFFFA800),
                                   ),
                                   child: Text(
@@ -257,11 +299,11 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
 
 class FamilyListItemWidget extends ConsumerWidget {
   const FamilyListItemWidget({
-    required this.nickName,
+    required this.user,
     required this.onPressed,
     super.key,
   });
-  final String nickName;
+  final UserInfoModel user;
   final VoidCallback onPressed;
 
   @override
@@ -269,7 +311,7 @@ class FamilyListItemWidget extends ConsumerWidget {
     final bool isSelected = ref
         .watch(recruitViewModelProvider
             .select((RecruitState value) => value.recruitedFamilyList))
-        .contains(nickName);
+        .contains(user);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -286,7 +328,7 @@ class FamilyListItemWidget extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    nickName,
+                    user.nickname,
                     style: Typo.bMedium18,
                   ),
                   IconButton(
@@ -317,7 +359,9 @@ class CompleteRecruitDialogWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppService appService = ref.read(appServiceProvider.notifier);
+    final RecruitState state = ref.watch(recruitViewModelProvider);
+    final RecruitViewModel viewModel =
+        ref.read(recruitViewModelProvider.notifier);
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 32),
@@ -338,6 +382,14 @@ class CompleteRecruitDialogWidget extends ConsumerWidget {
                 '모집 완료 후 가족 구성원을 변경할 수 없습니다.',
                 textAlign: TextAlign.center,
                 style: Typo.bMedium14,
+              ),
+              const SizedBox(height: 8),
+              OutlinedBorderTextFieldWidget(
+                onChanged: (String value) {
+                  viewModel.onchangeFamilyName(familyName: value);
+                },
+                errorText: '',
+                hintText: '가족 이름을 적어주세요 (필수)',
               ),
               const SizedBox(height: 24),
               Row(
@@ -379,11 +431,11 @@ class CompleteRecruitDialogWidget extends ConsumerWidget {
                           backgroundColor: const Color(
                             0xFFFFA800,
                           ),
+                          disabledBackgroundColor: const Color(0xFFCDCDCD),
                         ),
-                        onPressed: () {
-                          appService.completeRecruit();
-                          context.pop();
-                        },
+                        onPressed: state.familyName.isEmpty
+                            ? null
+                            : viewModel.recruitFamily,
                         child: Text(
                           '네',
                           style: Typo.tSemiBold16.copyWith(
