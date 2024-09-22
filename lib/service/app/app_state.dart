@@ -8,7 +8,7 @@ class AppState extends Equatable {
   });
 
   const AppState.init()
-      : isSignedIn = true,
+      : isSignedIn = false,
         hasFamily = false;
 
   final bool isSignedIn;
@@ -19,8 +19,9 @@ class AppState extends Equatable {
     bool? hasFamily,
   }) =>
       AppState(
-          isSignedIn: isSignedIn ?? this.isSignedIn,
-          hasFamily: hasFamily ?? this.hasFamily);
+        isSignedIn: isSignedIn ?? this.isSignedIn,
+        hasFamily: hasFamily ?? this.hasFamily,
+      );
 
   @override
   List<Object?> get props => <Object?>[isSignedIn];

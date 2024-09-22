@@ -3,19 +3,32 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-final Provider<Dio> dioService = Provider<Dio>(
-  (Ref ref) => DioClient.dio
-    ..interceptors.addAll(<Interceptor>[
-      if (kDebugMode)
-        PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-        ),
-    ]),
+import 'auth_interceptor.dart';
+
+final Provider<Dio> dioServiceProvider = Provider<Dio>(
+  (Ref ref) {
+    if (kDebugMode) {
+      return DioClient.dio
+        ..interceptors.addAll(<Interceptor>[
+          // Dio logging interceptor
+          PrettyDioLogger(
+            requestHeader: true,
+            requestBody: true,
+            responseHeader: true,
+          ),
+          // 토큰 확인 인터셉터
+          ref.watch(authInterceptorProvider),
+        ]);
+    }
+    return DioClient.dio
+      ..interceptors.addAll(<Interceptor>[
+        ref.watch(authInterceptorProvider),
+      ]);
+  },
 );
 
 class DioClient {
-  static const String baseUrl = 'https://apis.data.go.kr/1613000/';
+  static const String baseUrl = 'http://211.188.49.236:5252/api/v1/';
 
   factory DioClient() => DioClient._();
   DioClient._();

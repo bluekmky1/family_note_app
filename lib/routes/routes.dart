@@ -19,21 +19,27 @@ class Routes {
     path: 'sign-up',
   );
 
-  // 홈(메인)페이지
-  static const RouteInfo home = RouteInfo(
-    name: '/home',
-    path: '/home',
-  );
-
-  // 답변 작성 및 보기 페이지
-  static const RouteInfo answers = RouteInfo(
-    name: '/home/answers',
-    path: 'answers',
+  // 가족방 선택 페이지
+  static const RouteInfo familyRooms = RouteInfo(
+    name: '/family-rooms',
+    path: '/family-rooms',
   );
 
   // 가족 구성원 모집 페이지
   static const RouteInfo recruit = RouteInfo(
-    name: '/recruit',
-    path: '/recruit',
+    name: '/family-rooms/recruit',
+    path: 'recruit',
+  );
+
+  // 홈(메인)페이지
+  static const RouteInfo home = RouteInfo(
+    name: '/family-rooms/home/:familyId',
+    path: 'home/:familyId',
+  );
+
+  // 답변 작성 및 보기 페이지
+  static const RouteInfo question = RouteInfo(
+    name: '/family-rooms/home/:familyId/question/:questionId',
+    path: 'question/:questionId',
   );
 }

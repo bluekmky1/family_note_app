@@ -20,42 +20,20 @@ class AppRouterInterceptor {
     final bool isSignedIn = _ref
         .read(appServiceProvider.select((AppState value) => value.isSignedIn));
 
-    final bool hasFamily = _ref
-        .watch(appServiceProvider.select((AppState value) => value.hasFamily));
-    // final bool hasUserInfo = _ref.read(
-    //   myInfoServiceProvider.select((MyInfoState value) => value.hasUserInfo),
-    // );
-    // final bool isNeedForedUPdate = _ref.read(
-    //   appServiceProvider.select((AppState value) => value.isNeedUpdate),
-    // );
-
-    // final bool isPermissionTrue = _ref.read(
-    //   myInfoServiceProvider
-    //       .select((MyInfoState value) => value.isPermissionTrue),
-    // );
-
     if (!isSignedIn) {
       // sign in 으로 가야만 하는 상태입니다.
       if (state.fullPath?.startsWith(Routes.auth.name) == false) {
         return Routes.signIn.name;
       }
-    }
-
-    // 로그인이 되었고 가족 모집이 완료되지 않은 상태
-    if (isSignedIn) {
-      if (!hasFamily) {
-        return Routes.recruit.name;
+    } else {
+      // 현재 위치가 아직도 auth 관련 페이지에 있다면
+      // 즉시 가족 구성원 화면으로 리다이렉트 해줍니다.
+      if (state.fullPath != null &&
+          state.fullPath!.startsWith(Routes.auth.name)) {
+        return Routes.familyRooms.name;
       }
     }
 
     return null;
-
-    // // 현재 위치가 아직도 auth 관련 페이지에 있다면
-    // // 즉시 홈화면으로 리다이렉트 해줍니다.
-    // if (state.fullPath != null &&
-    //     state.fullPath!.startsWith(Routes.auth.name)) {
-    //   return Routes.home.name;
-    // }
-    // return null;
   }
 }
