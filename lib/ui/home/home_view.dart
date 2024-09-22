@@ -8,7 +8,12 @@ import '../../theme/typographies.dart';
 import '../common/consts/assets.dart';
 
 class HomeView extends ConsumerWidget {
-  const HomeView({super.key});
+  HomeView({
+    required String familyId,
+    super.key,
+  }) : familyId = int.parse(familyId);
+
+  final int familyId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -206,7 +211,7 @@ class QuestionItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () {
-          context.goNamed(Routes.answers.name);
+          context.goNamed(Routes.question.name);
         },
         child: Container(
           height: 110,
