@@ -250,39 +250,7 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: SizedBox(
-                                height: 56,
-                                child: TextButton(
-                                  onPressed: state.recruitedFamilyList.isEmpty
-                                      ? null
-                                      : () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) =>
-                                                const CompleteRecruitDialogWidget(),
-                                          );
-                                        },
-                                  style: TextButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    disabledBackgroundColor:
-                                        const Color(0xFFCDCDCD),
-                                    backgroundColor: const Color(0xFFFFA800),
-                                  ),
-                                  child: Text(
-                                    '가족 구성원 모집 완료',
-                                    style: Typo.hBold20.copyWith(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        const CompleteRecruitButtonWIdget(),
                       ],
                     ),
                   ),
@@ -292,6 +260,49 @@ class _RecruitViewState extends ConsumerState<RecruitView> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CompleteRecruitButtonWIdget extends ConsumerWidget {
+  const CompleteRecruitButtonWIdget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final RecruitState state = ref.watch(recruitViewModelProvider);
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: SizedBox(
+            height: 56,
+            child: TextButton(
+              onPressed: state.recruitedFamilyList.isEmpty
+                  ? null
+                  : () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            const CompleteRecruitDialogWidget(),
+                      );
+                    },
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+                disabledBackgroundColor: const Color(0xFFCDCDCD),
+                backgroundColor: const Color(0xFFFFA800),
+              ),
+              child: Text(
+                '가족 구성원 모집 완료',
+                style: Typo.hBold20.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
