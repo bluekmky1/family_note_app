@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/loading_status.dart';
 import '../../../routes/routes.dart';
-import '../../../service/app/app_service.dart';
 import '../../../theme/typographies.dart';
 import '../../common/consts/assets.dart';
-import '../../common/widgets/outLine_border_text_field_widget.dart';
+import '../../common/widgets/outlined_border_text_field_widget.dart';
+import 'sign_in_state.dart';
+import 'sign_in_view_model.dart';
 
 class SignInView extends StatelessWidget {
   const SignInView({super.key});
@@ -70,7 +72,17 @@ class SignInFormWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AppService appservice = ref.read(appServiceProvider.notifier);
+    ref.listen(
+        signInViewModelProvider
+            .select((SignInState value) => value.signInLoadingStatus),
+        (LoadingStatus? previous, LoadingStatus next) {
+      if (next == LoadingStatus.success) {
+        context.goNamed(Routes.familyRooms.name);
+      }
+    });
+
+    final SignInViewModel viewModel =
+        ref.read(signInViewModelProvider.notifier);
 
     return Column(
       children: <Widget>[
@@ -81,15 +93,24 @@ class SignInFormWidget extends ConsumerWidget {
         const SizedBox(
           height: 16,
         ),
-        const OutlineBorderTextFieldWidget(
+        OutlinedBorderTextFieldWidget(
           label: '닉네임',
           hintText: '30자 이내로 작성해주세요',
+          errorText: '',
+          onChanged: (String value) {
+            viewModel.onChangeNickname(nickName: value);
+          },
         ),
         const SizedBox(
           height: 32,
         ),
-        const OutlineBorderTextFieldWidget(
+        OutlinedBorderTextFieldWidget(
           label: '비밀번호',
+          obscureText: true,
+          onChanged: (String value) {
+            viewModel.onChangePassword(password: value);
+          },
+          errorText: '',
         ),
         const SizedBox(
           height: 72,
@@ -100,10 +121,7 @@ class SignInFormWidget extends ConsumerWidget {
               child: SizedBox(
                 height: 56,
                 child: TextButton(
-                  onPressed: () {
-                    appservice.signIn();
-                    context.goNamed(Routes.home.name);
-                  },
+                  onPressed: viewModel.signIn,
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
