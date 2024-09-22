@@ -31,4 +31,5 @@ class FamilyRoomsState extends Equatable {
         getFamilyGroupLoadingStatus,
         familyGroupList,
       ];
+  bool get isLoading => getFamilyGroupLoadingStatus == LoadingStatus.loading;
 }

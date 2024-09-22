@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/common/use_case/use_case_result.dart';
 import '../../core/loading_status.dart';
-import '../../data/family/entity/fmaily_id_entity.dart';
 import '../../domain/family/recruit_family_use_case.dart';
 import '../../domain/users/model/user_info_model.dart';
 import '../../domain/users/search_user_use_case.dart';

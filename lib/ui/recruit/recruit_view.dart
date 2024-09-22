@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/loading_status.dart';
 import '../../domain/users/model/user_info_model.dart';
-import '../../routes/routes.dart';
 import '../../theme/typographies.dart';
 import '../common/widgets/outlined_border_text_field_widget.dart';
 import '../family_rooms/family_rooms_view_model.dart';

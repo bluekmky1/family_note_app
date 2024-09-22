@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../domain/family/model/family_group_model.dart';
 import '../../routes/routes.dart';
-import '../../service/app/app_service.dart';
 import '../../theme/typographies.dart';
 import 'family_rooms_state.dart';
 import 'family_rooms_view_model.dart';
@@ -28,10 +27,6 @@ class _FamilyRoomsViewState extends ConsumerState<FamilyRoomsView> {
   @override
   Widget build(BuildContext context) {
     final FamilyRoomsState state = ref.watch(familyRoomsViewModelProvider);
-    final FamilyRoomsViewModel viewModel =
-        ref.read(familyRoomsViewModelProvider.notifier);
-
-    final AppService appService = ref.read(appServiceProvider.notifier);
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -105,31 +100,39 @@ class _FamilyRoomsViewState extends ConsumerState<FamilyRoomsView> {
                         ),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: ListView.separated(
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: state.familyGroupList.length,
-                        itemBuilder: (BuildContext context, int index) =>
-                            GestureDetector(
-                          onTap: () {
-                            context.goNamed(
-                              Routes.home.name,
-                              pathParameters: <String, String>{
-                                'familyId': state
-                                    .familyGroupList[index].familyId
-                                    .toString(),
-                              },
-                            );
-                          },
-                          child: FamilyGroupListItemWidget(
-                            familyGroupModel: state.familyGroupList[index],
-                          ),
-                        ),
-                        separatorBuilder: (BuildContext context, int index) =>
-                            const Divider(
-                          color: Colors.transparent,
-                          height: 13,
-                        ),
-                      ),
+                      child: state.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xFFFFA800),
+                              ),
+                            )
+                          : ListView.separated(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: state.familyGroupList.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  GestureDetector(
+                                onTap: () {
+                                  context.goNamed(
+                                    Routes.home.name,
+                                    pathParameters: <String, String>{
+                                      'familyId': state
+                                          .familyGroupList[index].familyId
+                                          .toString(),
+                                    },
+                                  );
+                                },
+                                child: FamilyGroupListItemWidget(
+                                  familyGroupModel:
+                                      state.familyGroupList[index],
+                                ),
+                              ),
+                              separatorBuilder:
+                                  (BuildContext context, int index) =>
+                                      const Divider(
+                                color: Colors.transparent,
+                                height: 13,
+                              ),
+                            ),
                     ),
                   ),
                   SizedBox(
