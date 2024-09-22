@@ -20,7 +20,6 @@ class RedirectNotifier extends ChangeNotifier {
   }) : _ref = ref {
     _ref.listen(appServiceProvider.select((AppState value) => value.isSignedIn),
         (bool? previous, bool next) {
-      print(next);
       notifyListeners();
     });
   }

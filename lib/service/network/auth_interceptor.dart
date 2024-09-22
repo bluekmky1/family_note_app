@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
+import '../app/app_service.dart';
 import '../storage/storage_key.dart';
 import '../storage/storage_service.dart';
 import 'dio_service.dart';
@@ -13,17 +14,21 @@ final Provider<AuthInterceptor> authInterceptorProvider =
   (ProviderRef<AuthInterceptor> ref) => AuthInterceptor(
     storageService: ref.watch(storageServiceProvider),
     refreshTokenInterceptor: ref.watch(refreshTokenInterceptorProvider),
+    appService: ref.read(appServiceProvider.notifier),
   ),
 );
 
 class AuthInterceptor extends QueuedInterceptor {
   AuthInterceptor({
     required StorageService storageService,
+    required AppService appService,
     required RefreshTokenInterceptor refreshTokenInterceptor,
   })  : _storageService = storageService,
+        _appService = appService,
         _refreshTokenInterceptor = refreshTokenInterceptor;
 
   final StorageService _storageService;
+  final AppService _appService;
   final RefreshTokenInterceptor _refreshTokenInterceptor;
 
   @override
@@ -46,6 +51,10 @@ class AuthInterceptor extends QueuedInterceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
+    // 토큰 만료
+    if (err.response?.statusCode == 403) {
+      await _appService.signOut();
+    }
     if (err.response?.statusCode == 401) {
       final Dio dio = Dio()
         ..options = BaseOptions(

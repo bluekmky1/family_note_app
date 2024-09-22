@@ -39,7 +39,8 @@ class Routes {
 
   // 답변 작성 및 보기 페이지
   static const RouteInfo question = RouteInfo(
-    name: '/family-rooms/home/:familyId/question/:questionId',
-    path: 'question/:questionId',
+    name:
+        '/family-rooms/home/:familyId/question/:questionId/:question/:createdAt',
+    path: 'question/:questionId/:question/:createdAt',
   );
 }
