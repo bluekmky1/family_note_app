@@ -238,8 +238,9 @@ class FamilyInfoDrawerWidget extends ConsumerWidget {
                       ),
                     ),
                     onPressed: () {
-                      appService.signOut();
-                      context.goNamed(Routes.signIn.name);
+                      appService
+                          .signOut()
+                          .then((_) => context.goNamed(Routes.signIn.name));
                     },
                     child: Text(
                       '로그아웃',
