@@ -138,11 +138,13 @@ class _AnswerWidgetState extends ConsumerState<AnswerWidget> {
     final QuestionState state = ref.watch(questionViewModelProvider);
 
     final FamilyAnswerModel answerModel = state.familyAnswerList.singleWhere(
-        (FamilyAnswerModel element) => widget.nickname == element.nickname,
+        (FamilyAnswerModel element) =>
+            widget.nickname == element.nickname && element.answer.isNotEmpty,
         orElse: () => FamilyAnswerModel(
               answer: '',
               nickname: widget.nickname,
             ));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -184,6 +186,7 @@ class _AnswerWidgetState extends ConsumerState<AnswerWidget> {
                         );
                       }
                       // 가족이 답변한 경우
+
                       else {
                         return Text(
                           answerModel.answer,
