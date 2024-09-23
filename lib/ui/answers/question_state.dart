@@ -79,6 +79,6 @@ class QuestionState extends Equatable {
       ];
 
   bool get isLoading =>
-      getFamilyAnswerLoadingStatus == LoadingStatus.loading &&
+      getFamilyAnswerLoadingStatus == LoadingStatus.loading ||
       getFamilyInfoLoadingStatus == LoadingStatus.loading;
 }
